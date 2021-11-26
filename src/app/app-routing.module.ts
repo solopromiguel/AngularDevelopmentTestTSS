@@ -18,8 +18,8 @@ export const appRoutes: Route[] = [
     children: [
       // Apps
       {
-        path: 'apps', children: [
-          { path: 'pokemon', loadChildren: () => import('src/app/pokemon/pokemon.module').then(m => m.PokemonModule) },
+        path: '', children: [
+          { path: '', loadChildren: () => import('src/app/pokemon/pokemon.module').then(m => m.PokemonModule) },
 
         ]
       }
