@@ -14,7 +14,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
-
+import {MatTreeModule} from '@angular/material/tree';
 @NgModule({
   declarations: [
     PokemonComponent,
@@ -33,6 +33,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatTableModule,
     MatToolbarModule,
     MatPaginatorModule,
+    MatTreeModule
   ]
 })
 export class PokemonModule { }
