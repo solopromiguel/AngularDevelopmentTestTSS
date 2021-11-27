@@ -1,6 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { map, merge, Observable, Subject, switchMap, takeUntil } from 'rxjs';
+import { DetailsComponent } from '../details/details.component';
 import { PokemonService } from '../pokemon.service';
 import { IPokemon, IPokemonPagination } from '../pokemon.types';
 
@@ -11,18 +13,19 @@ import { IPokemon, IPokemonPagination } from '../pokemon.types';
 })
 export class ListComponent implements OnInit {
   @ViewChild(MatPaginator) private _paginator: MatPaginator;
-  
+
   isLoading: boolean = false;
   pokemons$: Observable<IPokemon[]>;
   pagination: IPokemonPagination;
-  displayedColumns = ['index', 'name', 'url']
+  displayedColumns = ['index', 'name', 'url', 'action']
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   /**
   * Constructor
   */
   constructor(private _pokemonService: PokemonService,
-    private _changeDetectorRef: ChangeDetectorRef) { }
+    private _changeDetectorRef: ChangeDetectorRef,
+    private _matDialog: MatDialog) { }
 
   ngOnInit(): void {
 
@@ -38,7 +41,7 @@ export class ListComponent implements OnInit {
         this._changeDetectorRef.markForCheck();
       });
 
-    // Get the products
+    // Get the pokemons
     this.pokemons$ = this._pokemonService.pokemons$;
   }
   /**
@@ -64,6 +67,21 @@ export class ListComponent implements OnInit {
   }
   refresh() {
     this._pokemonService.getPokemons(this._paginator.pageIndex, this._paginator.pageSize).subscribe();
+  }
+  getPokemon(name?: string): void {
+
+    // Open the dialog
+    const dialogRef = this._matDialog.open(DetailsComponent, {
+      data: {
+        pokemon: { name: name }
+      },
+      disableClose: false,
+      height:'600px'
+    });
+    dialogRef.afterClosed()
+      .subscribe((result) => {
+        console.log('Compose dialog was closed!');
+      });
   }
 
 }

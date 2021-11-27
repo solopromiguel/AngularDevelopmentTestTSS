@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { IPokemon, IPokemonPagination } from './pokemon.types';
+import { BehaviorSubject, map, Observable, tap } from 'rxjs';
+import { IPokemon, IPokemonDetail, IPokemonPagination } from './pokemon.types';
 import { HttpClient } from "@angular/common/http";
 @Injectable({
   providedIn: 'root'
@@ -8,6 +8,7 @@ import { HttpClient } from "@angular/common/http";
 export class PokemonService {
   // Private
   private _pokemons: BehaviorSubject<IPokemon[]> = new BehaviorSubject<IPokemon[]>([]);
+  private _pokemon: BehaviorSubject<IPokemonDetail | null> = new BehaviorSubject(null);
   private _pagination: BehaviorSubject<IPokemonPagination> = new BehaviorSubject<IPokemonPagination>({offset:1, limit:10 , count:null, previous:null,next:null});
   private readonly resource: string = 'https://pokeapi.co/api/v2'
   /**
@@ -27,6 +28,12 @@ export class PokemonService {
   get pokemons$(): Observable<IPokemon[]> {
     return this._pokemons.asObservable();
   }
+  /**
+     * Getter for pokemon
+     */
+   get pokemon$(): Observable<IPokemonDetail> {
+    return this._pokemon.asObservable();
+}
 
     /**
     * Get pokemons
@@ -51,6 +58,19 @@ export class PokemonService {
                 this._pokemons.next(response.results);
             })
         );
+    }
+
+    /**
+     * Get pokemon by name
+     */
+    getPokemonByName(name: string): Observable<IPokemonDetail> {
+        return this._httpClient.get<IPokemonDetail>(this.resource + '/pokemon/' + name).pipe(
+            map(pokemon => {
+                this._pokemon.next(pokemon);
+                return pokemon
+            })
+        );
+
     }
 
 }
